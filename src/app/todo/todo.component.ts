@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { TodoFilter } from "./models/todo-filter.type";
-import { TodoActions } from "./store/actions";
-import { TodoSelectors } from "./store/selectors";
+import { TodoActions, TodoSelectors } from "./store/slice";
 
 @Component({
   selector: "app-todo",
@@ -54,30 +53,30 @@ export class TodoComponent implements OnInit {
   constructor(private readonly store: Store) {}
 
   ngOnInit() {
-    this.store.dispatch(TodoActions.loadAction());
+    this.store.dispatch(TodoActions.load.trigger());
   }
 
   onAddTodo(text: string): void {
-    this.store.dispatch(TodoActions.addAction({ text }));
+    this.store.dispatch(TodoActions.add({ text }));
   }
 
   onToggle(id: number): void {
-    this.store.dispatch(TodoActions.toggleAction({ id }));
+    this.store.dispatch(TodoActions.toggle({ id }));
   }
 
   onUpdate(event: { id: number; text: string }): void {
-    this.store.dispatch(TodoActions.updateAction(event));
+    this.store.dispatch(TodoActions.update(event));
   }
 
   onDelete(id: number): void {
-    this.store.dispatch(TodoActions.deleteAction({ id }));
+    this.store.dispatch(TodoActions.delete({ id }));
   }
 
   onFilter(filter: TodoFilter): void {
-    this.store.dispatch(TodoActions.setFilterAction({ filter }));
+    this.store.dispatch(TodoActions.setFilter({ filter }));
   }
 
   onClearCompleted(): void {
-    this.store.dispatch(TodoActions.clearCompletedAction());
+    this.store.dispatch(TodoActions.clearCompleted());
   }
 }
