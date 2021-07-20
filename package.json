@@ -22,6 +22,8 @@
     "@ngrx/store": "^12.2.0",
     "@ngrx/store-devtools": "^12.2.0",
     "rxjs": "~6.6.0",
+    "todomvc-app-css": "^2.4.1",
+    "todomvc-common": "^1.0.5",
     "tslib": "^2.2.0",
     "zone.js": "~0.11.4"
   },
