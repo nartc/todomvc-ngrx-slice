@@ -3,15 +3,15 @@ import { Router } from "@angular/router";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { map, switchMap, tap } from "rxjs/operators";
 import { TodosService } from "../services/todos.service";
-import { TodoActions } from "./actions";
+import { TodoActions } from "./slice";
 
 @Injectable()
 export class TodosEffects {
   loadTodos$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(TodoActions.loadAction),
+      ofType(TodoActions.load.trigger),
       switchMap(() => this.todosService.getTodos()),
-      map((todos) => TodoActions.loadSuccessAction({ todos }))
+      map((todos) => TodoActions.load.success({ todos }))
       // delay(1000), // Simulate network latency for loading animation
     );
   });
@@ -19,7 +19,7 @@ export class TodosEffects {
   filter$ = createEffect(
     () => {
       return this.actions$.pipe(
-        ofType(TodoActions.setFilterAction),
+        ofType(TodoActions.setFilter),
         tap((action) => {
           switch (action.filter) {
             case "SHOW_ACTIVE": {
