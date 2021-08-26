@@ -1,18 +1,13 @@
 import { createSelector } from "@ngrx/store";
 import { createSlice, noopReducer, PayloadAction } from "ngrx-slice";
+import { createSliceEntityAdapter } from "ngrx-slice/entity";
 import { RouterSelectors } from "../../store/router.selectors";
 import { TodoFilter } from "../models/todo-filter.type";
 import { Todo } from "../models/todo.interface";
 
-export interface TodoState {
-  todos: Todo[];
-  loading: boolean;
-}
+export const todoAdapter = createSliceEntityAdapter<Todo>();
 
-export const initialState: TodoState = {
-  todos: [],
-  loading: false,
-};
+export const todoAdapterSelectors = todoAdapter.getSelectors();
 
 export const {
   actions: TodoActions,
@@ -20,10 +15,12 @@ export const {
   ...TodoFeature
 } = createSlice({
   name: "todo",
-  initialState,
+  initialState: todoAdapter.getInitialState({
+    loading: false,
+  }),
   reducers: {
     add: (state, action: PayloadAction<{ text: string }>) => {
-      state.todos.push({
+      todoAdapter.addOne(state, {
         id: Math.random(),
         text: action.text,
         creationDate: new Date(),
@@ -33,41 +30,34 @@ export const {
     load: {
       trigger: (state) => void (state.loading = true),
       success: (state, action: PayloadAction<{ todos: Todo[] }>) => {
-        state.todos = action.todos;
+        todoAdapter.setAll(state, action.todos);
         state.loading = false;
       },
     },
     toggle: (state, action: PayloadAction<{ id: number }>) => {
-      const todo = state.todos.find((todo) => todo.id === action.id);
-      if (todo) {
-        todo.completed = !todo.completed;
-      }
+      todoAdapter.updateOne(state, {
+        id: action.id,
+        changes: {
+          completed: !state.entities[action.id]!.completed,
+        },
+      });
     },
-    delete: (state, action: PayloadAction<{ id: number }>) => {
-      const todoIndex = state.todos.findIndex((todo) => todo.id === action.id);
-      if (todoIndex !== -1) {
-        state.todos.splice(todoIndex, 1);
-      }
-    },
-    update: (state, action: PayloadAction<{ id: number; text: string }>) => {
-      const todo = state.todos.find((todo) => todo.id === action.id);
-      if (todo) {
-        todo.text = action.text;
-      }
-    },
+    delete: todoAdapter.removeOne,
+    update: todoAdapter.updateOne,
     clearCompleted: (state) => {
-      state.todos = state.todos.filter((todo) => !todo.completed);
+      todoAdapter.removeMany(
+        state,
+        state.ids.filter((id) => state.entities[id]!.completed)
+      );
     },
-    setFilter: noopReducer<TodoState, { filter: TodoFilter }>(),
+    setFilter: noopReducer<
+      ReturnType<typeof todoAdapter.getInitialState>,
+      { filter: TodoFilter }
+    >(),
   },
 });
 
 // Calculated selectors
-
-const selectTotalTodos = createSelector(
-  selectors.selectTodos,
-  (todos) => todos.length
-);
 
 const selectFilter = createSelector(
   RouterSelectors.selectRouteParamFilter,
@@ -86,8 +76,18 @@ const selectFilter = createSelector(
   }
 );
 
+const selectAll = createSelector(
+  selectors.selectTodoState,
+  todoAdapterSelectors.selectAll
+);
+
+const selectTotal = createSelector(
+  selectors.selectTodoState,
+  todoAdapterSelectors.selectTotal
+);
+
 const selectFilteredTodos = createSelector(
-  selectors.selectTodos,
+  selectAll,
   selectFilter,
   (todos, filter) => {
     switch (filter) {
@@ -102,27 +102,23 @@ const selectFilteredTodos = createSelector(
   }
 );
 
-const selectHasTodos = createSelector(selectTotalTodos, (totalTodos) => {
-  return totalTodos > 0;
+const selectHasTodos = createSelector(
+  selectTotal,
+  (totalTodos) => totalTodos > 0
+);
+
+const selectHasCompletedTodos = createSelector(selectAll, (todos) => {
+  return todos.filter((t) => t.completed).length > 0;
 });
 
-const selectHasCompletedTodos = createSelector(
-  selectors.selectTodos,
-  (todos) => {
-    return todos.filter((t) => t.completed).length > 0;
-  }
-);
-
-const selectIncompleteTodosCount = createSelector(
-  selectors.selectTodos,
-  (todos) => {
-    return todos.filter((t) => !t.completed).length;
-  }
-);
+const selectIncompleteTodosCount = createSelector(selectAll, (todos) => {
+  return todos.filter((t) => !t.completed).length;
+});
 
 export const TodoSelectors = {
   ...selectors,
-  selectTotalTodos,
+  selectAll,
+  selectTotal,
   selectFilter,
   selectFilteredTodos,
   selectHasTodos,

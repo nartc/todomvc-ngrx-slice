@@ -13,21 +13,21 @@ import { TodoActions, TodoSelectors } from "./store/slice";
         (addTodo)="onAddTodo($event)"
       ></app-new-todo>
     </header>
-    <app-todo-list
-      *ngIf="hasTodos$ | async"
-      [todos]="filteredTodos$ | async"
-      (toggle)="onToggle($event)"
-      (update)="onUpdate($event)"
-      (delete)="onDelete($event)"
-    ></app-todo-list>
-    <app-footer
-      *ngIf="hasTodos$ | async"
-      [hasCompletedTodos]="hasCompletedTodos$ | async"
-      [incompleteTodosCount]="incompleteTodosCount$ | async"
-      [currentFilter]="currentFilter$ | async"
-      (filter)="onFilter($event)"
-      (clearCompleted)="onClearCompleted()"
-    ></app-footer>
+    <ng-container *ngIf="hasTodos$ | async">
+      <app-todo-list
+        [todos]="filteredTodos$ | async"
+        (toggle)="onToggle($event)"
+        (update)="onUpdate($event)"
+        (delete)="onDelete($event)"
+      ></app-todo-list>
+      <app-footer
+        [hasCompletedTodos]="hasCompletedTodos$ | async"
+        [incompleteTodosCount]="incompleteTodosCount$ | async"
+        [currentFilter]="currentFilter$ | async"
+        (filter)="onFilter($event)"
+        (clearCompleted)="onClearCompleted()"
+      ></app-footer>
+    </ng-container>
 
     <ng-template #loading>
       <div>loading...</div>
@@ -64,12 +64,19 @@ export class TodoComponent implements OnInit {
     this.store.dispatch(TodoActions.toggle({ id }));
   }
 
-  onUpdate(event: { id: number; text: string }): void {
-    this.store.dispatch(TodoActions.update(event));
+  onUpdate({ id, text }: { id: number; text: string }): void {
+    this.store.dispatch(
+      TodoActions.update({
+        update: {
+          id,
+          changes: { text },
+        },
+      })
+    );
   }
 
   onDelete(id: number): void {
-    this.store.dispatch(TodoActions.delete({ id }));
+    this.store.dispatch(TodoActions.delete({ key: id }));
   }
 
   onFilter(filter: TodoFilter): void {
