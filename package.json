@@ -24,7 +24,7 @@
     "@ngrx/store-devtools": "^12.4.0",
     "immer": "^9.0.5",
     "ngrx-immer": "1.0.1",
-    "ngrx-slice": "^2.1.1",
+    "ngrx-slice": "~3.0.0",
     "rxjs": "~7.3.0",
     "todomvc-app-css": "^2.4.1",
     "todomvc-common": "^1.0.5",

@@ -65,11 +65,18 @@ export class TodoComponent implements OnInit {
   }
 
   onUpdate(event: { id: number; text: string }): void {
-    this.store.dispatch(TodoActions.update(event));
+    this.store.dispatch(
+      TodoActions.update({
+        update: {
+          id: event.id,
+          changes: { text: event.text },
+        },
+      })
+    );
   }
 
   onDelete(id: number): void {
-    this.store.dispatch(TodoActions.delete({ id }));
+    this.store.dispatch(TodoActions.delete({ key: id }));
   }
 
   onFilter(filter: TodoFilter): void {
