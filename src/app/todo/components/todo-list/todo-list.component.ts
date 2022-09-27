@@ -30,7 +30,7 @@ import { TodoListItemComponent } from "../todo-list-item/todo-list-item.componen
   imports: [NgIf, NgForOf, TodoListItemComponent],
 })
 export class TodoListComponent {
-  @Input() todos: Todo[] | null = null;
+  @Input() todos: Todo[] | null = [];
   @Output() toggle = new EventEmitter<number>();
   @Output() update = new EventEmitter<{ id: number; text: string }>();
   @Output() delete = new EventEmitter<number>();

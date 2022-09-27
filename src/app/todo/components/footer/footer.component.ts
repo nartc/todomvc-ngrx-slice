@@ -60,9 +60,9 @@ import { TodoFilter } from "../../models/todo-filter.type";
   imports: [RouterLinkWithHref, NgIf],
 })
 export class FooterComponent {
-  @Input() hasCompletedTodos: boolean | null = null;
-  @Input() incompleteTodosCount: number | null = null;
-  @Input() currentFilter: TodoFilter | null = null;
+  @Input() hasCompletedTodos: boolean | null = false;
+  @Input() incompleteTodosCount: number | null = 0;
+  @Input() currentFilter: TodoFilter | null = 'SHOW_ALL';
   @Output() filter = new EventEmitter<TodoFilter>();
   @Output() clearCompleted = new EventEmitter();
 }

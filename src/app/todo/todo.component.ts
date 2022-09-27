@@ -1,7 +1,11 @@
 import { AsyncPipe, NgIf } from "@angular/common";
-import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+} from "@angular/core";
 import { Store } from "@ngrx/store";
-import { tap } from "rxjs";
 import { FooterComponent } from "./components/footer/footer.component";
 import { NewTodoComponent } from "./components/new-todo/new-todo.component";
 import { TodoListComponent } from "./components/todo-list/todo-list.component";
@@ -50,48 +54,48 @@ import { TodoActions, TodoSelectors } from "./store/slice";
   ],
 })
 export class TodoComponent implements OnInit {
-  readonly hasTodos$ = this.store.select(TodoSelectors.selectHasTodos);
-  readonly loading$ = this.store.select(TodoSelectors.selectLoading);
-  readonly filteredTodos$ = this.store.select(
+  readonly #store = inject(Store);
+
+  readonly hasTodos$ = this.#store.select(TodoSelectors.selectHasTodos);
+  readonly loading$ = this.#store.select(TodoSelectors.selectLoading);
+  readonly filteredTodos$ = this.#store.select(
     TodoSelectors.selectFilteredTodos
   );
-  readonly hasCompletedTodos$ = this.store.select(
+  readonly hasCompletedTodos$ = this.#store.select(
     TodoSelectors.selectHasCompletedTodos
   );
-  readonly incompleteTodosCount$ = this.store.select(
+  readonly incompleteTodosCount$ = this.#store.select(
     TodoSelectors.selectIncompleteTodosCount
   );
-  readonly currentFilter$ = this.store.select(TodoSelectors.selectFilter);
-
-  constructor(private readonly store: Store) {}
+  readonly currentFilter$ = this.#store.select(TodoSelectors.selectFilter);
 
   ngOnInit() {
-    this.store.dispatch(TodoActions.load.trigger());
+    this.#store.dispatch(TodoActions.load.trigger());
   }
 
   onAddTodo(text: string): void {
-    this.store.dispatch(TodoActions.add({ text }));
+    this.#store.dispatch(TodoActions.add({ text }));
   }
 
   onToggle(id: number): void {
-    this.store.dispatch(TodoActions.toggle({ id }));
+    this.#store.dispatch(TodoActions.toggle({ id }));
   }
 
   onUpdate(event: { id: number; text: string }): void {
-    this.store.dispatch(
+    this.#store.dispatch(
       TodoActions.update({ id: event.id, changes: { text: event.text } })
     );
   }
 
   onDelete(id: number): void {
-    this.store.dispatch(TodoActions.delete({ key: id }));
+    this.#store.dispatch(TodoActions.delete({ key: id }));
   }
 
   onFilter(filter: TodoFilter): void {
-    this.store.dispatch(TodoActions.setFilter({ filter }));
+    this.#store.dispatch(TodoActions.setFilter({ filter }));
   }
 
   onClearCompleted(): void {
-    this.store.dispatch(TodoActions.clearCompleted());
+    this.#store.dispatch(TodoActions.clearCompleted());
   }
 }
