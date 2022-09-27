@@ -17,7 +17,7 @@ import { TodoFilter } from "../../models/todo-filter.type";
       <ul id="filters" class="filters">
         <li>
           <a
-            [routerLink]=""
+            [routerLink]="[]"
             [class.selected]="currentFilter === 'SHOW_ALL'"
             (click)="filter.emit('SHOW_ALL')"
           >
@@ -26,7 +26,7 @@ import { TodoFilter } from "../../models/todo-filter.type";
         </li>
         <li>
           <a
-            [routerLink]=""
+            [routerLink]="[]"
             [class.selected]="currentFilter === 'SHOW_ACTIVE'"
             (click)="filter.emit('SHOW_ACTIVE')"
           >
@@ -35,7 +35,7 @@ import { TodoFilter } from "../../models/todo-filter.type";
         </li>
         <li>
           <a
-            [routerLink]=""
+            [routerLink]="[]"
             [class.selected]="currentFilter === 'SHOW_COMPLETED'"
             (click)="filter.emit('SHOW_COMPLETED')"
           >
