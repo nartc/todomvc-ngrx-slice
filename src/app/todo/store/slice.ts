@@ -13,9 +13,7 @@ const {
   ...TodoFeature
 } = createSlice({
   name: "todo",
-  initialState: todoAdapter.getInitialState({
-    loading: false,
-  }),
+  initialState: todoAdapter.getInitialState({ loading: false }),
   reducers: {
     add: (state, action: PayloadAction<{ text: string }>) => {
       todoAdapter.addOne(state, {
