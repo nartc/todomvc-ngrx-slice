@@ -1,7 +1,9 @@
 import { Component } from "@angular/core";
+import { RouterOutlet } from "@angular/router";
 
 @Component({
   selector: "app-root",
+  standalone: true,
   template: `
     <section class="todoapp">
       <router-outlet></router-outlet>
@@ -11,8 +13,6 @@ import { Component } from "@angular/core";
       <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
     </footer>
   `,
-  styles: [],
+  imports: [RouterOutlet],
 })
-export class AppComponent {
-  title = "todomvc-ngrx-slice";
-}
+export class AppComponent {}

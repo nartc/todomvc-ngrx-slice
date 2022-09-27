@@ -1,10 +1,16 @@
+import { AsyncPipe, NgIf } from "@angular/common";
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { Store } from "@ngrx/store";
+import { tap } from "rxjs";
+import { FooterComponent } from "./components/footer/footer.component";
+import { NewTodoComponent } from "./components/new-todo/new-todo.component";
+import { TodoListComponent } from "./components/todo-list/todo-list.component";
 import { TodoFilter } from "./models/todo-filter.type";
 import { TodoActions, TodoSelectors } from "./store/slice";
 
 @Component({
   selector: "app-todo",
+  standalone: true,
   template: `
     <header class="header">
       <h1>todos</h1>
@@ -33,8 +39,15 @@ import { TodoActions, TodoSelectors } from "./store/slice";
       <div>loading...</div>
     </ng-template>
   `,
-  styles: [],
+  providers: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    NgIf,
+    AsyncPipe,
+    NewTodoComponent,
+    TodoListComponent,
+    FooterComponent,
+  ],
 })
 export class TodoComponent implements OnInit {
   readonly hasTodos$ = this.store.select(TodoSelectors.selectHasTodos);
@@ -66,12 +79,7 @@ export class TodoComponent implements OnInit {
 
   onUpdate(event: { id: number; text: string }): void {
     this.store.dispatch(
-      TodoActions.update({
-        update: {
-          id: event.id,
-          changes: { text: event.text },
-        },
-      })
+      TodoActions.update({ id: event.id, changes: { text: event.text } })
     );
   }
 

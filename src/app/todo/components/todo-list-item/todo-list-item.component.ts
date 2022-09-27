@@ -1,3 +1,4 @@
+import { NgIf } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -9,6 +10,7 @@ import { Todo } from "../../models/todo.interface";
 
 @Component({
   selector: "app-todo-list-item",
+  standalone: true,
   template: `
     <li
       *ngIf="todo as todo"
@@ -39,6 +41,7 @@ import { Todo } from "../../models/todo.interface";
     </li>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [NgIf],
 })
 export class TodoListItemComponent {
   @Input() todo: Todo | null = null;

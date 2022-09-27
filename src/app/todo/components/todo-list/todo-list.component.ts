@@ -1,3 +1,4 @@
+import { NgForOf, NgIf } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,9 +7,11 @@ import {
   Output,
 } from "@angular/core";
 import { Todo } from "../../models/todo.interface";
+import { TodoListItemComponent } from "../todo-list-item/todo-list-item.component";
 
 @Component({
   selector: "app-todo-list",
+  standalone: true,
   template: `
     <section id="main" class="main" *ngIf="todos as todos">
       <div class="toogle-view" *ngIf="todos.length > 0"></div>
@@ -24,6 +27,7 @@ import { Todo } from "../../models/todo.interface";
     </section>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [NgIf, NgForOf, TodoListItemComponent],
 })
 export class TodoListComponent {
   @Input() todos: Todo[] | null = null;

@@ -7,6 +7,7 @@ import {
 
 @Component({
   selector: "app-new-todo",
+  standalone: true,
   template: `
     <input
       id="new-todo"

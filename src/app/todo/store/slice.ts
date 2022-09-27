@@ -7,7 +7,7 @@ import { Todo } from "../models/todo.interface";
 
 const todoAdapter = createSliceEntityAdapter<Todo>();
 
-export const {
+const {
   actions: TodoActions,
   selectors,
   ...TodoFeature
@@ -92,23 +92,17 @@ const selectFilteredTodos = createSelector(
 
 const selectHasTodos = createSelector(
   todoAdapterSelectors.selectTotal,
-  (totalTodos) => {
-    return totalTodos > 0;
-  }
+  (totalTodos) => totalTodos > 0
 );
 
 const selectHasCompletedTodos = createSelector(
   todoAdapterSelectors.selectAll,
-  (todos) => {
-    return todos.filter((t) => t.completed).length > 0;
-  }
+  (todos) => todos.filter((t) => t.completed).length > 0
 );
 
 const selectIncompleteTodosCount = createSelector(
   todoAdapterSelectors.selectAll,
-  (todos) => {
-    return todos.filter((t) => !t.completed).length;
-  }
+  (todos) => todos.filter((t) => !t.completed).length
 );
 
 export const TodoSelectors = {
@@ -119,3 +113,5 @@ export const TodoSelectors = {
   selectHasCompletedTodos,
   selectIncompleteTodosCount,
 };
+
+export { TodoActions, TodoFeature };

@@ -1,3 +1,4 @@
+import { NgIf } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -5,10 +6,12 @@ import {
   Input,
   Output,
 } from "@angular/core";
+import { RouterLinkWithHref } from "@angular/router";
 import { TodoFilter } from "../../models/todo-filter.type";
 
 @Component({
   selector: "app-footer",
+  standalone: true,
   template: `
     <footer id="footer" class="footer">
       <span id="todo-count" class="todo-count"
@@ -54,6 +57,7 @@ import { TodoFilter } from "../../models/todo-filter.type";
     </footer>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [RouterLinkWithHref, NgIf],
 })
 export class FooterComponent {
   @Input() hasCompletedTodos: boolean | null = null;
